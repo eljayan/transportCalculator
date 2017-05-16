@@ -1,4 +1,8 @@
-'''determines the truck type based on cubic meters'''
+'''
+determines the truck type based on cubic meters
+returns a tuple with the qyt of trucks and the type
+'''
+
 import math
 
 def select(cbm):

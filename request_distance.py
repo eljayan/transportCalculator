@@ -12,10 +12,10 @@ driver.get(url)
 def main():
     #iterate workbook
     xl = client.Dispatch("Excel.Application")
-    wb = xl.Workbooks.Open("D:/myScripts/transportCalculator/Ecuador_Distancias.xls")
+    wb = xl.Workbooks.Open("D:/myScripts/transportCalculator/sample/Ecuador_Distancias.xls")
     sh = wb.Sheets("Sheet1")
 
-    for cell in sh.Range("A226:A273"):
+    for cell in sh.Range("A265:A273"):
         origin = cell.Value
         destination = cell.Offset(1,2).Value
         try:
