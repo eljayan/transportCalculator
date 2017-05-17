@@ -1,6 +1,6 @@
 '''
 input: a path to a packing list
-output: dictionary with the biigest box weight and the total weight of the pl
+output: dictionary with the biigest box weight, total volume and the total weight of the pl
 '''
 from PL import PL
 
@@ -15,7 +15,8 @@ def readpl(path):
             maxweight = item.gross_weight
 
     plinfo["biggest_case"]=maxweight
-    plinfo["total_volume"]=pl.volume
+    plinfo["total_volume"]=float(pl.volume)
+    plinfo["total_weight"]=float(pl.gross_weight)
 
     return plinfo
 

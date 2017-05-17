@@ -3,16 +3,12 @@ input: two dictionaries with plinfo and route info
 output:a dictionary with the biggest box and total volume of the pl object, origin and destination.
 '''
 
-from readpl import readpl
+def buildrequest(plinfo, routeinfo):
+    request = {}
+    request["biggest_box"] = plinfo["biggest_case"]
+    request["total_weight"] = plinfo["total_weight"]
+    request["total_volume"] =  plinfo["total_volume"]
+    request["origin"]=routeinfo["origin"]
+    request["destination"]=routeinfo["destination"]
 
-def buildrequest(pl):
-    request = {"origin":None,
-               "destination":None,
-               "biggest_box":None,
-               "weight":None}
-
-
-
-    #
-
-    request["weight"] = maxweight
+    return request
