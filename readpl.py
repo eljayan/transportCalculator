@@ -17,7 +17,7 @@ def readpl(path):
     plinfo["biggest_case"]=maxweight
     plinfo["total_volume"]=float(pl.volume)
     plinfo["total_weight"]=float(pl.gross_weight)
-
+    pl.workbook.Close()
     return plinfo
 
 

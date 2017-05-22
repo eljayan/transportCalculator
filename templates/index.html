@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transport Cost Calculator</title>
+
+</head>
+<body onbeforeunload="kill()">
+    <form method="post" enctype="multipart/form-data">
+        <label>Select Packing List:</label>
+        <input type="file" name="path">
+        <br>
+        <label>Select origin:</label>
+        <select name="origin">
+            <option value="guayaquil">guayaquil</option>
+            <option value="quito">quito</option>
+        </select>
+        <br>
+        <label>Select destination:</label>
+        <select name="destination">
+            {%for opt in destinations%}
+                <option value="{{opt[0]}}">{{opt[0]}}</option>
+            {%endfor%}
+        </select>
+        <br>
+        <label>Select region:</label>
+        <select name="productline">
+            <option value="wireless">wireless</option>
+            <option value="fixed">fixed</option>
+            <option value="transmission">transmission</option>
+            <option value="datacom">datacom</option>
+            <option value="core">core</option>
+        </select>
+        <br>
+        <label>Extra distance (optional): </label>
+        <input type="text" name = "extradistance", size="4">
+        <br>
+        <input type="submit">
+
+    </form>
+
+    <script type="text/javascript">
+       function kill(){
+        alert("dieeeeeeeeeeee")
+       }
+    </script>
+</body>
+</html>

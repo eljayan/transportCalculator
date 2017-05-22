@@ -42,4 +42,4 @@ def calculate(biggest_case_weight, total_weight):
 
 
 if __name__ == '__main__':
-    print calculate(biggest_case_weight= 50, total_weight= 50)
+    print calculate(biggest_case_weight= 175, total_weight= 1200)
