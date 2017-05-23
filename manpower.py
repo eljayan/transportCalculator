@@ -1,7 +1,7 @@
 '''returns the number of manpower needed to handle one box weight'''
 import math
 
-def calculate(biggest_case_weight, total_weight):
+def calculate(biggest_case_weight, total_weight, destination):
     '''
     weight_float is the weight of the biggest box
     cases_int is the number of boxes in the shipment
@@ -21,8 +21,17 @@ def calculate(biggest_case_weight, total_weight):
         #use a forklift
         return 0
     elif biggest_case_weight > MAXBOXWEIGHT:
+        if destination == "guayaquil" or destination == "quito":
         #use a forklift
-        return 0
+            return 2
+        else:
+            peopleneeded = int(math.ceil(biggest_case_weight/MAXLOADPERSON))
+            load_per_journey = total_weight/peopleneeded
+            if load_per_journey > MAXLOADJOURNEY:
+                return int(math.ceil(total_weight/MAXLOADJOURNEY))
+            else:
+                return peopleneeded
+
     elif total_weight <= MAXLOADPERSON:
         #if the cases are to small, no manpower
         return 0
@@ -42,4 +51,4 @@ def calculate(biggest_case_weight, total_weight):
 
 
 if __name__ == '__main__':
-    print calculate(biggest_case_weight= 175, total_weight= 1200)
+    print calculate(biggest_case_weight= 450, total_weight= 1200, destination="guayaquil")

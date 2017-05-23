@@ -21,11 +21,11 @@ def home():
         basic_data["origin"]=formdata["origin"]
         basic_data["destination"]=formdata["destination"]
         basic_data["extradistance"]=formdata["extradistance"]
+        basic_data["productline"]=formdata["productline"]
         basic_data["path"] = uploaded_file_path
 
         results = calculator.calculator(basic_data)
-
-        return jsonify(results)
+        return render_template("index.html", calculations = results)
         # return render_template("index.htm", destinations = destinations_list)
     else:
         return render_template("index.html", destinations=destinations_list)

@@ -2,43 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <script src="/static/js/bootstrap.min.js"></script>
     <title>Transport Cost Calculator</title>
 
 </head>
 <body onbeforeunload="kill()">
-    <form method="post" enctype="multipart/form-data">
-        <label>Select Packing List:</label>
-        <input type="file" name="path">
-        <br>
-        <label>Select origin:</label>
-        <select name="origin">
-            <option value="guayaquil">guayaquil</option>
-            <option value="quito">quito</option>
-        </select>
-        <br>
-        <label>Select destination:</label>
-        <select name="destination">
-            {%for opt in destinations%}
-                <option value="{{opt[0]}}">{{opt[0]}}</option>
-            {%endfor%}
-        </select>
-        <br>
-        <label>Select region:</label>
-        <select name="productline">
-            <option value="wireless">wireless</option>
-            <option value="fixed">fixed</option>
-            <option value="transmission">transmission</option>
-            <option value="datacom">datacom</option>
-            <option value="core">core</option>
-        </select>
-        <br>
-        <label>Extra distance (optional): </label>
-        <input type="text" name = "extradistance", size="4">
-        <br>
-        <input type="submit">
+    <div class="jumbotron text-center">
+        <h1>Transport Cost Calculator</h1>
+    </div>
 
-    </form>
+    <div class="container">
+        <div class="row">
+            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Select Packing List:</label>
+                    <input type="file" name="path">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Select origin:</label>
+                    <select name="origin">
+                        <option value="guayaquil">guayaquil</option>
+                        <option value="quito">quito</option>
+                    </select>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Select destination:</label>
+                    <select name="destination">
+                        {%for opt in destinations%}
+                            <option value="{{opt[0]}}">{{opt[0]}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Select region:</label>
+                    <select name="productline">
+                        <option value="wireless">wireless</option>
+                        <option value="fixed">fixed</option>
+                        <option value="transmission">transmission</option>
+                        <option value="datacom">datacom</option>
+                        <option value="core">core</option>
+                    </select>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Extra distance (optional): </label>
+                    <input type="text" name = "extradistance", size="4">
+                </div>
+                <br>
+                <input type="submit">
 
+            </form>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm-8">
+                <textarea>{{calculations}}</textarea>
+            </div>
+            <div class="col-sm-4"></div>
+
+        </div>
+    </div>
     <script type="text/javascript">
        function kill(){
         alert("dieeeeeeeeeeee")
