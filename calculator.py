@@ -1,6 +1,6 @@
 '''
-this module starts the view and sends the 
-information to other modules
+input: a dictionary of arguments
+output: a dictionary with the calculations result
 '''
 import view
 from readpl import readpl
