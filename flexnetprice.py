@@ -5,6 +5,7 @@ outpt: a dictionary representing the cost of transportation
 '''
 import trucktype
 import manpower
+import forklift
 from sqlite3 import connect
 
 def calculate(request):
@@ -13,14 +14,17 @@ def calculate(request):
 
     origin = request["origin"]
     destination = request["destination"]
+    region = request["region"]
     volume = request["total_volume"]
-    biggest_box =  request["biggest_box"]
+    biggest_case =  request["biggest_case"]
     weight = request["total_weight"]
     extradistance = request.get("extradistance", 0)
     productline = request.get("productline", "")
+    stops = request.get("stops", 0)
 
     ttype = trucktype.select(volume)
-    mpower = manpower.calculate(biggest_case_weight=biggest_box, total_weight=weight, destination=destination)
+    mpower = manpower.calculate(biggest_case_weight=biggest_case, total_weight=weight, destination=destination)
+    forklift_cost = forklift.calculate(weight,biggest_case, destination)
 
     distance = db.execute("select distance from distances where origin=? and destination=?", (origin, destination))
     distance = distance.fetchone()[0]
@@ -37,27 +41,33 @@ def calculate(request):
         transport_cost += t[0] * float(query.fetchone()[0])
 
     mpower_cost = mpower * 55
+    stops_cost = 0.5*transport_cost
 
     return {
         "supplier":"flexnet",
         "distance":distance,
         "extradistance": extradistance,
         "productline":productline,
+        "region": region,
         "truck_type":ttype,
         "base_transport_cost":transport_cost,
         "extra_distance_cost":extradistance_price,
         "manpower_cost":mpower_cost,
-        "total_cost":transport_cost+extradistance_price+mpower_cost
+        "forklift":forklift_cost,
+        "stops_cost": stops_cost,
+        "total_cost":transport_cost+extradistance_price+mpower_cost+forklift_cost+stops_cost
     }
 
 if __name__ == '__main__':
     r = calculate({"origin":"guayaquil",
                "destination":"quito",
+                "region":2,
                "total_volume":3.25,
-               "biggest_box":84.3,
+               "biggest_case":84.3,
                "total_weight":256.38,
                "extradistance" : 100,
-                "productline":"wireless"
+                "productline":"wireless",
+                "stops": 1
                 })
 
 
