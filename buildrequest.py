@@ -3,6 +3,7 @@ Combines the information from the GUI and the PL.
 input: two dictionaries with plinfo and route info
 output:a dictionary with the biggest box and total volume of the pl object, origin and destination.
 '''
+from sqlite3 import connect
 
 def buildrequest(basic_data, plinfo):
     request = {}
@@ -27,7 +28,10 @@ def buildrequest(basic_data, plinfo):
 
 
 def find_region(destination):
-    return #############################
+    db = connect("db.db")
+    cursor = db.execute("select region from distances where destination = ?", (destination,))
+    region = cursor.fetchone()[0]
+    return region#############################
 
 if __name__ == '__main__':
     basic_data = {

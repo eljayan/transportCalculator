@@ -1,5 +1,6 @@
 from Tkinter import *
 import tkMessageBox
+import calculator
 from sqlite3 import connect
 from ttk import Combobox
 from tkintertable import TableModel, TableCanvas
@@ -67,24 +68,28 @@ def main():
         "extra_distance_textbox": extra_distance_textbox,
         "stops_textbox": stops_textbox
     }
-    process_button = Button(mainframe, text="Calculate", command = lambda: update_tables(table, model, table_dict, variables))
+    process_status = StringVar()
+    process_button = Button(mainframe, text="Calculate", command = lambda: update_tables(table, model, table_dict, variables, process_status))
     process_button.grid(row=6, column=1, padx = 5, pady=5, sticky = "w")
+    process_status_label = Label(mainframe, textvariable=process_status, width=45, anchor="w")
+    process_status_label.grid(row=6, column=3, padx=5)
 
-    table_dict = {'1': {'origin': '',
+    table_dict = {'1': {'supplier':'',
+                        'origin': '',
                         'destination':'',
+                        'distance': '',
                         'product line':'',
-                        'supplier': '',
-                        'distance':'',
-                        'extra km':'',
                         'region':'',
+                        'extra km':'',
                         'stops':'',
+                        'truck type':'',
                         'base transport':'',
                         'add transport':'',
                         'manpower cost':'',
                         'forklift':'',
+                        'stops cost':'',
                         'total cost':''
                         }}
-    # d={'1': {'origin': '', 'destination':'', 'supplier': ''}}
 
     tableframe = Frame(root, width=1600)
     tableframe.grid(row=1, column=0)
@@ -115,16 +120,20 @@ def showrequest(request):
     tkMessageBox.showinfo(message=request)
 
 
-def update_tables(table, model, table_dict, variables):
+def update_tables(table, model, table_dict, variables, status):
     basic_data = build_basic_data(variables)
 
     #pasar a la funcion calculator
+    result  = calculator.calculator(basic_data, status)
 
     #actualizar el table_dict
 
     #pasar el table dict al model
 
     #redraw the table
+    model.importDict(result)
+    table.redrawTable()
+    status.set("Process completed.")
     return
 
 if __name__ == '__main__':

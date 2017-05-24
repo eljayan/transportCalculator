@@ -45,17 +45,20 @@ def calculate(request):
 
     return {
         "supplier":"flexnet",
+        "origin":origin,
+        'destination':destination,
         "distance":distance,
-        "extradistance": extradistance,
-        "productline":productline,
+        "product line": productline,
         "region": region,
-        "truck_type":ttype,
-        "base_transport_cost":transport_cost,
-        "extra_distance_cost":extradistance_price,
-        "manpower_cost":mpower_cost,
+        "extra km": extradistance,
+        "stops":stops,
+        "truck type":ttype,
+        "base transport":transport_cost,
+        "add transport":extradistance_price,
+        "manpower cost":mpower_cost,
         "forklift":forklift_cost,
-        "stops_cost": stops_cost,
-        "total_cost":transport_cost+extradistance_price+mpower_cost+forklift_cost+stops_cost
+        "stops cost": stops_cost,
+        "total cost":transport_cost+extradistance_price+mpower_cost+forklift_cost+stops_cost
     }
 
 if __name__ == '__main__':
@@ -69,6 +72,5 @@ if __name__ == '__main__':
                 "productline":"wireless",
                 "stops": 1
                 })
-
 
     print r

@@ -15,19 +15,25 @@ from readpl import readpl
 from buildrequest import buildrequest
 import flexnetprice
 
-def calculator(basic_data):
+def calculator(basic_data, status):
+    results = {}
 
     #read the pl
+    status.set("Reading Packing List...")
     plinfo = readpl(basic_data["path"])
 
     #build the request
     request = buildrequest(basic_data, plinfo)
 
     #send the request to flexnet calculator
+    status.set("Calculating costs...")
     flexnet_cost = flexnetprice.calculate(request)
 
-    print flexnet_cost
-    return flexnet_cost
+    #otro
+    results['1'] = flexnet_cost
+
+    print results
+    return results
 
 if __name__ == '__main__':
     calculator({})
