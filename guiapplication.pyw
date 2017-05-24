@@ -2,6 +2,7 @@ from Tkinter import *
 import tkMessageBox
 from sqlite3 import connect
 from ttk import Combobox
+from tkintertable import TableModel, TableCanvas
 from select_file import select_file
 
 def main():
@@ -54,11 +55,23 @@ def main():
 
     stops_label = Label(mainframe, text = "Number of Stops: ", width = 25, anchor="w")
     stops_label.grid(row=5, column =0, padx=5, pady=5)
+    stops_textbox = Text(mainframe, width=5, height=1)
+    stops_textbox.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
-    process_button = Button(mainframe, text="Calculate", command = lambda: showrequest(destination_selected.get()))
-    process_button.grid(row=5, column=1, padx = 5, pady=5, sticky = "w")
+    #paso las variabes y widgets a una funcion externa para que extraiga sus valores
+    variables={
+        "filename":filename,
+        "origins_list_selected":origins_list_selected,
+        "destination_selected":destination_selected,
+        "product_line_selected":product_line_selected,
+        "extra_distance_textbox": extra_distance_textbox,
+        "stops_textbox": stops_textbox
+    }
+    process_button = Button(mainframe, text="Calculate", command = lambda: showrequest(build_basic_data(variables)))
+    process_button.grid(row=6, column=1, padx = 5, pady=5, sticky = "w")
+    
 
-    mainframe.children
+
     root.mainloop()
 
 def get_destinations():
@@ -66,9 +79,19 @@ def get_destinations():
     cursor = db.execute("select destination from distances group by destination")
     return [destination[0] for destination in cursor]
 
+def build_basic_data(variables):
+    basic_data = {
+        "path": variables["filename"].get(),
+        "origin": variables["origins_list_selected"].get(),
+        "destination": variables["destination_selected"].get(),
+        "productline": variables["product_line_selected"].get(),
+        "extradistance": variables["extra_distance_textbox"].get("1.0", "end-1c"),
+        "stops": variables["stops_textbox"].get("1.0", "end-1c")
+    }
+    return  basic_data
+
 def showrequest(request):
     tkMessageBox.showinfo(message=request)
-
 
 if __name__ == '__main__':
     main()
