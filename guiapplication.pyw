@@ -11,7 +11,7 @@ def main():
 
     root.resizable(width=False, height=True)
 
-    mainframe = Frame(root, width = 800, height = 800, background="white")
+    mainframe = Frame(root, width = 1600, height = 300, background="white")
     mainframe.grid(row = 0, column=0, padx = 10, pady = 5)
     mainframe.grid_propagate(0)
 
@@ -67,10 +67,31 @@ def main():
         "extra_distance_textbox": extra_distance_textbox,
         "stops_textbox": stops_textbox
     }
-    process_button = Button(mainframe, text="Calculate", command = lambda: showrequest(build_basic_data(variables)))
+    process_button = Button(mainframe, text="Calculate", command = lambda: update_tables(table, model, table_dict, variables))
     process_button.grid(row=6, column=1, padx = 5, pady=5, sticky = "w")
-    
 
+    table_dict = {'1': {'origin': '',
+                        'destination':'',
+                        'product line':'',
+                        'supplier': '',
+                        'distance':'',
+                        'extra km':'',
+                        'region':'',
+                        'stops':'',
+                        'base transport':'',
+                        'add transport':'',
+                        'manpower cost':'',
+                        'forklift':'',
+                        'total cost':''
+                        }}
+    # d={'1': {'origin': '', 'destination':'', 'supplier': ''}}
+
+    tableframe = Frame(root, width=1600)
+    tableframe.grid(row=1, column=0)
+    model = TableModel()
+    model.importDict(table_dict)
+    table = TableCanvas(tableframe, model=model, width=1600)
+    table.createTableFrame()
 
     root.mainloop()
 
@@ -93,5 +114,19 @@ def build_basic_data(variables):
 def showrequest(request):
     tkMessageBox.showinfo(message=request)
 
+
+def update_tables(table, model, table_dict, variables):
+    basic_data = build_basic_data(variables)
+
+    #pasar a la funcion calculator
+
+    #actualizar el table_dict
+
+    #pasar el table dict al model
+
+    #redraw the table
+    return
+
 if __name__ == '__main__':
     main()
+    
