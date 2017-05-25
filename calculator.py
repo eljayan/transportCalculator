@@ -20,7 +20,7 @@ def calculator(app, basic_data):
 
     #read the pl
     app.process_status.set("Reading Packing List...")
-    plinfo = readpl(basic_data["path"])
+    plinfo = readpl(app, basic_data["path"])
 
     #build the request
     request = buildrequest(basic_data, plinfo)
@@ -32,7 +32,7 @@ def calculator(app, basic_data):
     #otro
     results['1'] = flexnet_cost
 
-    print results
+    # print results
     app.results = results
 
 if __name__ == '__main__':

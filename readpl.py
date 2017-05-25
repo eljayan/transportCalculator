@@ -4,9 +4,9 @@ output: dictionary with the biigest box weight, total volume and the total weigh
 '''
 from PL import PL
 
-def readpl(path):
+def readpl(app, path):
     plinfo = {}
-    pl = PL(path)
+    pl = PL(path, app)
 
     # get the biggest box
     maxweight = 0

@@ -10,7 +10,8 @@ import re
 
 
 class PL:
-    def __init__(self, filepath):
+    def __init__(self, filepath, app):
+        self.app = app
         self.xl_instance = None
         self.path = filepath
         self.filename = os.path.basename(filepath)
@@ -70,7 +71,7 @@ class PL:
         for cel in range(1, l + 1):
             if re.search(r"total", unicode(self.workbook.Sheets(1).Range("A" + unicode(cel)).Value), flags=re.IGNORECASE):
                 self.last_row = cel
-                print "last row: " + str(self.last_row)
+                self.app.process_status.set( "last row: " + str(self.last_row))
                 return
 
     def extract(self, stringpl):
@@ -86,7 +87,7 @@ class PL:
                 return re.search(patron, stringpl).group()
 
     def set_number(self):
-        print "finding pl number..."
+        self.app.process_status.set("finding pl number...")
         pattern = re.compile(r'P/L\s[Nn][Oo]')
         for cel in self.workbook.Sheets(1).Usedrange:
             if pattern.search(unicode(cel.Value)):
@@ -95,12 +96,12 @@ class PL:
         self.number = "Not Found"
 
     def set_summary(self):
-        print "setting summary..."
+        self.app.process_status.set("setting summary...")
         self.summary = self.workbook.Sheets(1).Range("A" + unicode(self.last_row)).Value
 
     def set_row_cases(self):
         '''creates a dictionary of {rows, case number}'''
-        print "creating dictionary of rows and case numbers..."
+        self.app.process_status.set("creating dictionary of rows and case numbers...")
         row_cases ={}
         case_number = 1 #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -127,7 +128,7 @@ class PL:
 
     def set_row_material(self):
         '''creates a dictionary of {rows, case material}'''
-        print "creating dictionary of rows and case materials"
+        self.app.process_status.set("creating dictionary of rows and case materials")
         row_material ={}
         material = "Carton" #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -154,7 +155,7 @@ class PL:
 
     def set_row_note(self):
         '''creates a dictionary of {rows, note}'''
-        print "creating dictionary of rows and notes"
+        self.app.process_status.set("creating dictionary of rows and notes")
         row_note ={}
         note = "" #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -187,7 +188,7 @@ class PL:
 
     def set_row_boxname(self):
         '''creates a dictionary of {rows, boxname}'''
-        print "creating dictionary of rows and boxnames..."
+        self.app.process_status.set("creating dictionary of rows and boxnames...")
 
         if not self.BOXNAMECOLUMN:
             self.row_boxname = {}
@@ -219,7 +220,7 @@ class PL:
 
     def set_row_gross_weight(self):
         '''creates a dictionary of {rows, item gross weight}'''
-        print "creating dictionary of rows and gross weights..."
+        self.app.process_status.set("creating dictionary of rows and gross weights...")
         row_gross_weight ={}
         gross_weight = 0 #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -246,7 +247,7 @@ class PL:
 
     def set_row_net_weight(self):
         '''creates a dictionary of {rows, item gross weight}'''
-        print "creating dictionary of rows and new weights.."
+        self.app.process_status.set("creating dictionary of rows and new weights..")
         row_net_weight ={}
         net_weight = float(0) #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -273,7 +274,7 @@ class PL:
 
     def set_row_size(self):
         '''creates a dictionary of {rows, item gross weight}'''
-        print "creating dictionary of rows and gross weights..."
+        self.app.process_status.set( "creating dictionary of rows and gross weights...")
         row_size ={}
         size = 0 #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -300,7 +301,7 @@ class PL:
 
     def set_row_volume(self):
         '''creates a dictionary of {rows, item volume}'''
-        print "creating dictionary of rows and volumes..."
+        self.app.process_status.set("creating dictionary of rows and volumes...")
         row_volume ={}
         volume = 0 #this is the control variable
         sheet = self.workbook.Sheets(1)
@@ -326,7 +327,7 @@ class PL:
         self.row_volume = row_volume
 
     def set_gross_weight(self):
-        print "setting gross weights..."
+        self.app.process_status.set("setting gross weights...")
         text = self.summary
         pattern = re.compile(r'gross\swe\w+\s?\(\w+\)\:\d*\.?\d*\s', flags=re.IGNORECASE)
         if pattern.search(text):
@@ -337,7 +338,7 @@ class PL:
             self.gross_weight = 0
 
     def set_net_weight(self):
-        print "setting net weights..."
+        self.app.process_status.set("setting net weights...")
         text = self.summary
         pattern = re.compile(r'[Nn].+\s[Ww][Ee].+\(\w+\):\d*\.?\d*\s')
         if pattern.search(text):
@@ -347,7 +348,7 @@ class PL:
             self.net_weight = 0
 
     def set_volume(self):
-        print "setting volumes..."
+        self.app.process_status.set("setting volumes...")
         text = self.summary
         pattern = re.compile(r'volume\s?\(\w\w\w\):\d*\.?\d*', flags=re.IGNORECASE)
         if pattern.search(text):
@@ -357,7 +358,7 @@ class PL:
             self.volume = 0
 
     def set_cases(self):
-        print "setting case numbers..."
+        self.app.process_status.set("setting case numbers...")
         # Total:5CASES    gross weight(KG):241.9    net weight(KG):176.07    volume(CBM):1.44
         text = self.summary
         pattern = re.compile(r'[Tt][Oo][Tt][Aa][Ll]\:\d+\w*\s')
@@ -387,57 +388,57 @@ class PL:
                     return cell.Column
 
     def set_case_column(self):
-        print "setting case column..."
+        self.app.process_status.set("setting case column...")
         pattern = r"case"
         self.CASECOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_material_column(self):
-        print "setting materials column..."
+        self.app.process_status.set("setting materials column...")
         pattern = r"material"
         self.MATERIALCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_part_number_column(self):
-        print "setting part number column..."
+        self.app.process_status.set("setting part number column...")
         pattern = r"part\s+number"
         self.PARTNUMBERCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_model_column(self):
-        print "setting models column..."
+        self.app.process_status.set("setting models column...")
         pattern = r"model"
         self.MODELCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_description_column(self):
-        print "setting description columns..."
+        self.app.process_status.set("setting description columns...")
         pattern = r"description"
         self.DESCRIPTIONCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_quantity_column(self):
-        print "setting qty column..."
+        self.app.process_status.set("setting qty column...")
         pattern = r"qty"
         self.QTYCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_uom_column(self):
-        print "setting uom column..."
+        self.app.process_status.set("setting uom column...")
         pattern = r"uom"
         self.UOMCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_unit_price_column(self):
-        print "setting unit price column..."
+        self.app.process_status.set("setting unit price column...")
         pattern = r"unit\sprice"
         self.UNITPRICECOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_total_price_column(self):
-        print "setting total price column..."
+        self.app.process_status.set("setting total price column...")
         pattern = r"total\sprice"
         self.TOTALPRICECOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_serial_column(self):
-        print "setting serial column..."
+        self.app.process_status.set("setting serial column...")
         pattern = r'serial'
         self.SERIALCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_headers_row(self):
-        print "setting headers column..."
+        self.app.process_status.set("setting headers column...")
         pattern = r"case\.*"
         compiledPattern = re.compile(pattern=pattern, flags=re.IGNORECASE)
         for row in self.workbook.Sheets(1).UsedRange.Rows:
@@ -449,7 +450,7 @@ class PL:
                     return
 
     def set_date(self):
-        print "setting date..."
+        self.app.process_status.set("setting date...")
         pattern = re.compile(r'[Dd][Aa][Tt][Ee]')
         datePattern = re.compile(r'\d+-\d+-\d+')
         columnCount = self.workbook.Sheets(1).Usedrange.Columns.Count
@@ -464,7 +465,7 @@ class PL:
                 break
 
     def set_contract(self):
-        print "setting contract number..."
+        self.app.process_status.set("setting contract number...")
         pattern = re.compile(r'[Cc][Oo][Nn][Tt][Rr][Aa][Cc][Tt]\s[Nn][Oo]\.:.+')
         for cel in self.workbook.Sheets(1).Usedrange:
             if pattern.search(unicode(cel.Value)):
@@ -475,7 +476,7 @@ class PL:
         self.contract = None
 
     def set_po(self): ####
-        print "setting po number..."
+        self.app.process_status.set("setting po number...")
         pattern = re.compile(r'p\/?o no\.:?\d*', flags=re.IGNORECASE)
         for cel in self.workbook.Sheets(1).Usedrange:
             if cel.column > 20:
@@ -489,7 +490,7 @@ class PL:
         self.po = None
 
     def set_project(self):
-        print "setting project name..."
+        self.app.process_status.set("setting project name...")
         pattern = re.compile(r'project\.*:\s*', flags=re.IGNORECASE)
         for cel in self.workbook.Sheets(1).Usedrange:
             if cel.column > 20:
@@ -502,43 +503,43 @@ class PL:
         self.project = None
 
     def set_items_range(self):
-        print "setting items range"
+        self.app.process_status.set("setting items range")
         rangeStart = self.workbook.Sheets(1).Cells(self.HEADERSROW + 1, self.PARTNUMBERCOL).Address
         rangeEnd = self.workbook.Sheets(1).Cells(self.last_row - 1, self.PARTNUMBERCOL).Address
         self.items_range = self.workbook.Sheets(1).Range(rangeStart, rangeEnd)
 
     def set_gross_weight_column(self):
-        print "setting gross weight column"
+        self.app.process_status.set("setting gross weight column")
         pattern = r'gw\n?\s?\(kg\)'
         self.GROSSWEIGHTCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_net_weight_column(self):
-        print "setting net weight column..."
+        self.app.process_status.set("setting net weight column...")
         pattern = r'nw\n?\s?\(kg\)'
         self.NETWEIGHTCOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_size_column(self):
-        print "setting size column..."
+        self.app.process_status.set("setting size column...")
         pattern = r'size\n?\s?\(mm\)'
         self.SIZECOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_volume_column(self):
-        print "setting volume column..."
+        self.app.process_status.set("setting volume column...")
         pattern = r'volume'
         self.VOLUMECOL = self.patternSearch(columnNamePattern=pattern)
 
     def set_note_column(self):
-        print "setting note column..."
+        self.app.process_status.set("setting note column...")
         pattern = r'note'
         self.NOTECOLUMN = self.patternSearch(columnNamePattern=pattern)
 
     def set_boxname_column(self):
-        print "setting boxname column..."
+        self.app.process_status.set("setting boxname column...")
         pattern = r'box name'
         self.BOXNAMECOLUMN = self.patternSearch(columnNamePattern=pattern)
 
     def set_items(self):
-        print "setting items..."
+        self.app.process_status.set("setting items...")
         sheet = self.workbook.Sheets(1)
         dataRange = self.items_range
         items_list = []
@@ -676,7 +677,7 @@ class PL:
 
     def set_line_items(self):
         '''creates one line per item quantity'''
-        print "setting line items..."
+        self.app.process_status.set("setting line items...")
         self.line_items = []
         for item in self.items_list:
             if item.serial != "":
@@ -773,5 +774,5 @@ if __name__ == "__main__":
     # print packing.VOLUMECOL
 
 
-    for i in packing.line_items:
-        pprint (vars(i))
+    # for i in packing.line_items:
+    #     pprint (vars(i))

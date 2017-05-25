@@ -73,4 +73,4 @@ if __name__ == '__main__':
                 "stops": 1
                 })
 
-    print r
+    # print r

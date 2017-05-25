@@ -78,9 +78,9 @@ class App():
         #cambios no se visualizaran porque el programa se estancaria en esta parte y no
         #avanzaria hasta el mainloop, que es donde se reescribe el contenid de la pantalla
 
-        self.process_thread = Thread(target=self.update_tables) #este es el thread que iniciara al hacer click
         self.process_status = StringVar()
-        self.process_button = Button(self.mainframe, text="Calculate", command = self.process_thread.start)
+        #en el command se debe incluir una funcion que luego cree un thread con el proceso deseado
+        self.process_button = Button(self.mainframe, text="Calculate", command = self.process_thread)
         self.process_button.grid(row=6, column=1, padx = 5, pady=5, sticky = "w")
         self.process_status_label = Label(self.mainframe, textvariable=self.process_status, width=45, anchor="w")
         self.process_status_label.grid(row=6, column=3, padx=5)
@@ -131,26 +131,34 @@ class App():
         tkMessageBox.showinfo(message=request)
 
 
+    def process_thread(self):
+        #esta funcion es la que crea un thread con la funcion deseada
+        t = Thread(target=self.update_tables)
+        t.start()
+
+
     def update_tables(self):
-        basic_data = self.build_basic_data()
+        try:
+            basic_data = self.build_basic_data()
 
-        #realizar el proceso en un nuevo thread
-        calculator.calculator(self, basic_data)
+            #realizar el proceso en un nuevo thread
+            calculator.calculator(self, basic_data)
 
-        # pasar a la funcion calculator
-        # result  = calculator.calculator(basic_data, status)
+            # pasar a la funcion calculator
+            # result  = calculator.calculator(basic_data, status)
 
-        #actualizar el table_dict
+            #actualizar el table_dict
 
-        #pasar el table dict al model
+            #pasar el table dict al model
 
-        #redraw the table
+            #redraw the table
 
-        self.model.importDict(self.results)
-        self.table.redrawTable()
-        self.process_status.set("Process completed.")
-        return
-
+            self.model.importDict(self.results)
+            self.table.redrawTable()
+            self.process_status.set("Process completed.")
+        except:
+            # tkMessageBox.showinfo(title="Sorry...", message= "Something went wrong... \n please contact support.")
+            self.process_status.set("Something went wrong... \n please contact support.")
 if __name__ == '__main__':
     App()
     
