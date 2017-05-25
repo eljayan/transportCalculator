@@ -73,7 +73,12 @@ class App():
             "stops_textbox": self.stops_textbox
         }
 
-        self.process_thread = Thread(target=self.update_tables)
+        #esta es la parte interesante. Para que la aplicacion se actualice mientras se
+        #ejecuta el proceso, es necesario crear un nuevo thread. De lo contrario los
+        #cambios no se visualizaran porque el programa se estancaria en esta parte y no
+        #avanzaria hasta el mainloop, que es donde se reescribe el contenid de la pantalla
+
+        self.process_thread = Thread(target=self.update_tables) #este es el thread que iniciara al hacer click
         self.process_status = StringVar()
         self.process_button = Button(self.mainframe, text="Calculate", command = self.process_thread.start)
         self.process_button.grid(row=6, column=1, padx = 5, pady=5, sticky = "w")
