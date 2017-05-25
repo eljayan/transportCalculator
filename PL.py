@@ -2,6 +2,7 @@
 Loads a PL object from an excel file, or from a COM Workbook
 """
 import os
+import pythoncom
 from win32com import client
 from pprint import pprint
 from copy import deepcopy
@@ -10,6 +11,7 @@ import re
 
 class PL:
     def __init__(self, filepath):
+        self.xl_instance = None
         self.path = filepath
         self.filename = os.path.basename(filepath)
         self.set_workbook()
@@ -56,7 +58,9 @@ class PL:
 
 
     def set_workbook(self):
+        pythoncom.CoInitialize()
         xl = client.Dispatch("Excel.Application")
+        self.xl_instance =  pythoncom.CoMarshalInterThreadInterfaceInStream(pythoncom.IID_IDispatch, xl)
         wb = xl.Workbooks.Open(self.path)
         self.workbook = wb
 
@@ -106,7 +110,7 @@ class PL:
             cell = sheet.Cells(r, self.CASECOL)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al case number
                     row_cases.update({str(r):str(case_number)})
 
@@ -133,7 +137,7 @@ class PL:
             cell = sheet.Cells(r, self.MATERIALCOL)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al case number
                     row_material.update({str(r):str(material)})
 
@@ -160,7 +164,7 @@ class PL:
             cell = sheet.Cells(r, self.NOTECOLUMN)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al note
                     row_note.update({str(r):str(note)})
 
@@ -198,7 +202,7 @@ class PL:
             cell = sheet.Cells(r, self.BOXNAMECOLUMN)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al case number
                     row_boxname.update({str(r):str(boxname)})
 
@@ -225,7 +229,7 @@ class PL:
             cell = sheet.Cells(r, self.GROSSWEIGHTCOL)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al gross weight
                     row_gross_weight.update({str(r):float(gross_weight)})
 
@@ -252,7 +256,7 @@ class PL:
             cell = sheet.Cells(r, self.NETWEIGHTCOL)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al gross weight
                     row_net_weight.update({str(r):float(net_weight)})
 
@@ -279,7 +283,7 @@ class PL:
             cell = sheet.Cells(r, self.SIZECOL)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al gross weight
                     row_size.update({str(r):str(size)})
 
@@ -306,7 +310,7 @@ class PL:
             cell = sheet.Cells(r, self.VOLUMECOL)
             if cell.Mergecells: #test si la celda es merged
                 if cell.Value == None or cell.Value == "" or cell.Value == unicode("%mergetop%"):
-                #si el valor es None:
+                    #si el valor es None:
                     #toma el row y lo asocia al gross weight
                     row_volume.update({str(r):float(volume)})
 
