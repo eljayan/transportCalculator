@@ -21,6 +21,8 @@ def calculate(request):
     extradistance = request.get("extradistance", 0)
     productline = request.get("productline", "")
     stops = request.get("stops", 0)
+    if not stops:
+        stops = 0
 
     ttype = trucktype.select(volume)
     mpower = manpower.calculate(biggest_case_weight=biggest_case, total_weight=weight, destination=destination)
@@ -41,7 +43,7 @@ def calculate(request):
         transport_cost += t[0] * float(query.fetchone()[0])
 
     mpower_cost = mpower * 55
-    stops_cost = 0.5*transport_cost
+    stops_cost = int(stops)*0.5*transport_cost
 
     return {
         "supplier":"flexnet",

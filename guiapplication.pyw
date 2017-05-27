@@ -6,6 +6,7 @@ from sqlite3 import connect
 from ttk import Combobox
 from tkintertable import TableModel, TableCanvas
 from select_file import select_file
+from traceback import print_exc
 
 class App():
     def __init__(self):
@@ -14,7 +15,7 @@ class App():
 
         self.root.title("Transport Cost Calculator")
 
-        self.root.resizable(width=False, height=True)
+        self.root.resizable(width=False, height=False)
 
         self.mainframe = Frame(self.root, width = 1600, height = 300, background="white")
         self.mainframe.grid(row = 0, column=0, padx = 10, pady = 5)
@@ -159,6 +160,7 @@ class App():
         except:
             # tkMessageBox.showinfo(title="Sorry...", message= "Something went wrong... \n please contact support.")
             self.process_status.set("Something went wrong... \n please contact support.")
+            print_exc()
 if __name__ == '__main__':
     App()
     
